@@ -115,6 +115,12 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+                Intent alarmIntent = new Intent(this, ReceiverThread.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+                AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                int interval = 8000;
+                manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+                Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
 
 		mVibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 		txt = (TextView)findViewById(R.id.main_text);
@@ -138,9 +144,9 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		edt.setAdapter(memori.getHistory(this));
 
 		new ServiceBoot().ifDownload = false;
-		startService(new Intent(this, ServiceBoot.class));
-		startService(new Intent(this, ServiceStatus.class));
-		startService(new Intent(this, AudioPreview.class));
+		//startService(new Intent(this, ServiceBoot.class));
+		//startService(new Intent(this, ServiceStatus.class));
+		//startService(new Intent(this, AudioPreview.class));
 
 		String[] aksi ={"Browser","File Manager","Terminal Emulator","Console... [text]","Console... [speech]"};
 		AlertDialog.Builder builderIndex = new AlertDialog.Builder(MainAsisten.this);
@@ -248,8 +254,14 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		sertts.cepat = 1.0f;
 		sertts.str = "";
 		startService(new Intent(this, ServiceTTS.class));
-		
-		
+
+        Intent alarmIntent = new Intent(this, ReceiverThread.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 8000;
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
+
 	}
 
 	Handler handlerInstallServer = new Handler() {

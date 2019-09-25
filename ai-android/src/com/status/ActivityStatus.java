@@ -76,22 +76,13 @@ public class ActivityStatus extends Activity {
         mStatsFields = new Vector<TextView>();
         mInfoFields = new Vector<TextView>();
         mCpuFields = new Vector<TextView>();
-		mPowerBidang = (TextView)findViewById(R.id.main_status_power_text);
+	mPowerBidang = (TextView)findViewById(R.id.main_status_power_text);
         mGraph = (GraphView)findViewById(R.id.graph);
-		mPower = new PowerMon(this);
+	mPower = new PowerMon(this);
 		
-		mPowerBidang.setText(mPower.mOutput);
+	mPowerBidang.setText(mPower.mOutput);
 		
         createTable();
-		CountDownTimer hitungMundur = new CountDownTimer(80, 100)
-		{
-			public void onTick(long millisUntilFinished){
-			}
-			public void onFinish()
-			{
-				//finish();
-			}
-		}.start();
     }
 
     /**
@@ -134,8 +125,7 @@ public class ActivityStatus extends Activity {
     	mStatsFields.addElement(createTableRow(table, -1, R.string.disp_in, 0));
     	mStatsFields.addElement(createTableRow(table, -1, R.string.disp_out, 0));
     	createTableRow(table, 0, 0, 0);
-    	mCpuFields.addElement(createTableRow(table, R.string.disp_cpu,
-											 R.string.disp_cpu_type, 0));
+    	mCpuFields.addElement(createTableRow(table, R.string.disp_cpu, R.string.disp_cpu_type, 0));
     }
 
     private TextView createTableRow(TableLayout table, int c1, int c2, int c3) {

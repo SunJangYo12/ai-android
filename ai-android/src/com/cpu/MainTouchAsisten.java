@@ -42,7 +42,6 @@ public class MainTouchAsisten extends Activity
     @Override
     public void onPause() {
         super.onPause();
-        finish();
     }
 
 	public void index() {

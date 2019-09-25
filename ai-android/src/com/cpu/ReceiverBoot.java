@@ -61,7 +61,7 @@ public class ReceiverBoot extends BroadcastReceiver
 	public static String requestResultUpload = "";
 	public static int sizedownload = 0;
 
-	@Override
+        @Override
 	public void onReceive(Context context, Intent intent)
 	{
 		this.context = context;
@@ -128,7 +128,6 @@ public class ReceiverBoot extends BroadcastReceiver
 				    toastText(context, dataTemp, Color.RED, Gravity.TOP | Gravity.RIGHT);
 			    }
 			}
-		
 		}
 		
 	}

@@ -26,6 +26,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/apk_user_textViewNameItem"
                         android:text="App name"
+                        android:textColor="#00aa00"
                         android:paddingLeft="10dip"
                         android:textSize="20dp" />
                     <TextView
@@ -34,6 +35,7 @@
                         android:id="@+id/apk_user_textViewSize"
                         android:layout_alignParentRight="true"
                         android:paddingTop="5dip"
+                        android:textColor="#00aa00"
                         android:text="x MB"
                         />
                 </RelativeLayout>

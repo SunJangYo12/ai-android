@@ -113,11 +113,11 @@
             </intent-filter>
         </activity>
 
-		<service android:name=".ServiceBoot"></service>
-		<service android:name=".ServiceMicHelper"></service>
-		<service android:name=".ServiceTTS"></service>
-		<service android:name="com.status.ServiceStatus"></service>
-		<service android:name="com.tools.AudioService"
+		<service android:enabled="true" android:name=".ServiceBoot"></service>
+		<service android:enabled="true" android:name=".ServiceMicHelper"></service>
+		<service android:enabled="true" android:name=".ServiceTTS"></service>
+		<service android:enabled="true" android:name="com.status.ServiceStatus"></service>
+		<service android:enabled="true" android:name="com.tools.AudioService"
             android:exported="true"
             android:label="Shun Audio">
             <intent-filter>
@@ -131,7 +131,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
 		</receiver>
-	
+	    <receiver android:name=".ReceiverThread"/>
 	
     </application>
 

