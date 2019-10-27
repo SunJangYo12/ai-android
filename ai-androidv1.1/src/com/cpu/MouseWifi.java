@@ -1,4 +1,4 @@
-package com.cpu.input.mouse;
+package com.cpu;
 
 
 import android.accessibilityservice.AccessibilityService;
@@ -159,7 +159,8 @@ public class MouseWifi extends AccessibilityService {
             default:
                 break;
         }
-        toast.cancel();
+        toast = new Toast(MouseWifi.this);
+        toast.setView(cursorView);
         toast.setGravity(0, x, y);
         toast.show();
     }
