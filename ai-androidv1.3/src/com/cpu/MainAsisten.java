@@ -121,7 +121,6 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		context.startService(new Intent(context, ServiceTTS.class));
 		context.startService(new Intent(context, ServiceStatus.class));
 		context.startService(new Intent(context, AudioPreview.class));
-		Toast.makeText(context, "Service Set", Toast.LENGTH_SHORT).show();
 	}
 
 	public void serviceAlarm(Context context) {
@@ -130,7 +129,6 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		int interval = 8000;
 		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
-		Toast.makeText(context, "Alarm Set", Toast.LENGTH_SHORT).show();
 	}
 
 	public String getPath(Context context, String pilih)
@@ -158,6 +156,7 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		txt = (TextView)findViewById(R.id.main_text);
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		edt = (AutoCompleteTextView) findViewById(R.id.main_edit);
+		settings = getSharedPreferences("Settings", 0);
 		memori = new MainMemori();
 		utils = new ServerUtils(this);
 		installApp = utils.getPathToInstallServer();
@@ -173,14 +172,22 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 			}
 		}
 
+		if (settings.getBoolean("service",true)) 
+		{
+			Toast.makeText(this, "Daemon starting...", Toast.LENGTH_LONG).show();
+			serviceAlarm(this);
+		}
+
 		edt.setAdapter(memori.getHistory(this));
 		
 		String[] aksi ={"Browser","File Manager","Terminal Emulator","Perintah[text]","Perintah[suara]"};
 		AlertDialog.Builder builderIndex = new AlertDialog.Builder(MainAsisten.this);
 		builderIndex.setTitle("pilih aksi");
 		builderIndex.setItems(aksi, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				if (item == 0){
+			public void onClick(DialogInterface dialog, int item) 
+			{
+				if (item == 0)
+				{
 					Intent ib = new Intent(getBaseContext(), MainBrowser.class);
 					ib.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					getBaseContext().startActivity(ib);
@@ -452,8 +459,7 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 		}
 	}
 	private void outPengaturan(int index)
-	{
-		settings = getSharedPreferences("Settings", 0);	
+	{	
 		SharedPreferences.Editor editor = settings.edit();	
 		
 		if (dataSpeech[index].equals("hemat")){
@@ -587,13 +593,13 @@ public class MainAsisten extends Activity implements TextToSpeech.OnInitListener
 	{
 		if (dataSpeech[index].equals("senter")  ||  dataSpeech[index].equals("berkedip")){
 			if (dataSpeech[index].equals("berkedip")){
-		    	for (int i=0; i<18; i++)
-		    	{
-			    	CountDownTimer hitungMundur = new CountDownTimer(200, 100)
-			    	{
-				    	public void onTick(long millisUntilFinished){
-				     	}
-				     	public void onFinish()
+				for (int i=0; i<18; i++)
+				{
+					CountDownTimer hitungMundur = new CountDownTimer(200, 100)
+					{
+						public void onTick(long millisUntilFinished){
+						}
+						public void onFinish()
 				    	{
 					    	Senter s = new Senter();
 					    	s.runingKu();

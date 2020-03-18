@@ -42,7 +42,6 @@ public class ReceiverBoot extends BroadcastReceiver
 	Intent cuai, komi, maini, touchi;
 	PendingIntent cuap, kompp, mainp, touchp;
 	SharedPreferences settings;
-	protected AudioManager mAudioManager;
 	
 	public static String dataTemp = "";
 	public static String dataVolt = "";
@@ -61,27 +60,12 @@ public class ReceiverBoot extends BroadcastReceiver
 	public static String requestResultUpload = "";
 	public static int sizedownload = 0;
 
-        @Override
+	@Override
 	public void onReceive(Context context, Intent intent)
 	{
 		this.context = context;
 		memori = new MainMemori();
 		settings = context.getSharedPreferences("Settings", 0);	
-		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
-		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
-		{
-			
-		}
-		if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
-		{
-			if (settings.getBoolean("mode hemat", false)){
-				Intent mIntent = new Intent(context, MainAsisten.class);
-				mIntent.putExtra("layar","on");
-				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(mIntent);
-			}
-		}
 	
 		if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
 		{
@@ -89,9 +73,10 @@ public class ReceiverBoot extends BroadcastReceiver
 				MainAsisten main = new MainAsisten();
 				main.service(context);
 				main.serviceAlarm(context);
+				Toast.makeText(context, "ai Background created", Toast.LENGTH_LONG).show();
 			}
 			else {
-				Toast.makeText(context, "Service thread Off", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "ai Background disable", Toast.LENGTH_LONG).show();
 			}
 		}
 		if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED))
@@ -112,7 +97,7 @@ public class ReceiverBoot extends BroadcastReceiver
 			dataVolt = ""+voltase+" V";
 			dataAmp  = ""+b[0];
 			if (dataAmp.equals("")) {
-				dataAmp = "Error";
+				dataAmp = "Null";
 			}
 
 			notifiBoot(context, dataVolt, dataTemp, dataAmp+" mA");
@@ -135,7 +120,7 @@ public class ReceiverBoot extends BroadcastReceiver
 	
 	public void notifiBoot(Context context, String volt, String temp, String amp)
 	{
-                settings = context.getSharedPreferences("Settings", 0);	
+		settings = context.getSharedPreferences("Settings", 0);	
 		
 		MainAsisten asisten = new MainAsisten();
 		String ledMic = "OFF";
@@ -143,15 +128,15 @@ public class ReceiverBoot extends BroadcastReceiver
 			ledMic = "ON";
 		}
 		cuai = new Intent(Intent.ACTION_VIEW, Uri.parse("https://https-m-accuweather-com.0.freebasics.com/id/id/wonosobo/202805/weather-forecast/202805?iorg_service_id_internal=398041573691256%3BAfriwooZeY5Vtpkj"));
-	        komi = new Intent(context, Kompas.class);
-	        touchi = new Intent(context, MainTouchAsisten.class);
+		komi = new Intent(context, Kompas.class);
+		touchi = new Intent(context, MainTouchAsisten.class);
 		maini = new Intent(context, MainAsisten.class);
 		maini.putExtra("destroy","hancur");
 
-	        cuap = PendingIntent.getActivity(context, 0, cuai, PendingIntent.FLAG_UPDATE_CURRENT);
-	        kompp = PendingIntent.getActivity(context, 0, komi, PendingIntent.FLAG_UPDATE_CURRENT);
-	        touchp = PendingIntent.getActivity(context, 0, touchi, PendingIntent.FLAG_UPDATE_CURRENT);
-	        mainp = PendingIntent.getActivity(context, 0, maini, PendingIntent.FLAG_UPDATE_CURRENT);
+		cuap = PendingIntent.getActivity(context, 0, cuai, PendingIntent.FLAG_UPDATE_CURRENT);
+		kompp = PendingIntent.getActivity(context, 0, komi, PendingIntent.FLAG_UPDATE_CURRENT);
+		touchp = PendingIntent.getActivity(context, 0, touchi, PendingIntent.FLAG_UPDATE_CURRENT);
+		mainp = PendingIntent.getActivity(context, 0, maini, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notifi);
 		contentView.setImageViewResource(R.id.image, R.drawable.setting);

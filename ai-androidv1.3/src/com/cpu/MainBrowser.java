@@ -33,13 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebIconDatabase;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 import java.io.*;
 import android.content.Context;
 import android.content.Intent;
@@ -65,11 +59,13 @@ public class MainBrowser extends Activity {
     private static int filefbcounter = 0;
     private static String url = "http://free.facebook.com";
     private String[] xsplit;
+    private String titlePage = "";
     private String dataPost = "";
     private String filefbmetode = "";
     private String filefbpath = "";
     private String filefbnama = "";
     private String filefbsize = "";
+    private boolean savepage = false;
     private boolean uploadAuto = false;
     private boolean dataUrlError = false;
     private boolean runDecodingInbox = false;
@@ -192,6 +188,40 @@ public class MainBrowser extends Activity {
         }catch(Exception e) {}
     }
 
+    private void webkitFilefbReceive(Context context, String wurl) {
+        if (prosesWeb) 
+        {
+            String ok = "";
+            WebView webFbWebkit = new WebView(context);
+
+            class MyJavaScriptInterface 
+            {
+                private String ok = "";
+                public MyJavaScriptInterface(String aContentView) {
+                    ok = aContentView;
+                }
+                @SuppressWarnings("unused")
+                public void processContent(String out) {
+                    Log.i("ssss", out);
+                }
+            }
+            webFbWebkit.getSettings().setJavaScriptEnabled(true);
+            webFbWebkit.addJavascriptInterface(new MyJavaScriptInterface(ok), "INTERFACE");
+            webFbWebkit.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap fav) {
+                    prosesWeb = false;
+                }
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    view.loadUrl("javascript:window.INTERFACE.processContent(document.getElementsByTagName('html')[0].innerHTML);");
+                    prosesWeb = true;
+                }
+            });
+            webFbWebkit.loadUrl(wurl);
+        }
+    }
+
     public String webkitText(Context context, String wurl) {
         if (prosesWeb) 
         {
@@ -253,6 +283,27 @@ public class MainBrowser extends Activity {
             }
         });
         alertDialog.show();
+    }
+
+    public void toastText(Context context, String data, int warna, int letak)
+    {
+        LinearLayout layout = new LinearLayout(context);
+        TextView text = new TextView(context);
+        text.setText(data);
+        text.setTextColor(Color.BLACK);
+        text.setTextSize(13);
+        text.setGravity(Gravity.BOTTOM);
+        layout.addView(text);
+
+        Toast toast = new Toast(context.getApplicationContext());
+        toast.setGravity(letak, 0, 0);
+        toast.setView(text);
+        toast.setView(layout);
+
+        View toastView = toast.getView();
+        toastView.setBackgroundColor(warna);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.show();
     }
 
     private class NativeWebPageTask extends AsyncTask<String, Void, String> 
@@ -341,7 +392,8 @@ public class MainBrowser extends Activity {
         }
     }
 
-    private class MyWebViewClient extends WebViewClient {
+    private class MyWebViewClient extends WebViewClient 
+    {
         @Override
         public boolean shouldOverrideUrlLoading(final WebView view, String url) {
             view.loadUrl(url);
@@ -366,11 +418,46 @@ public class MainBrowser extends Activity {
             urlLoading.setVisibility(View.GONE);
             isLoading = false;
 
-            if (runDecodingInbox)
+            if (savepage)
             {
-                runDecodingInbox = false;
-                //webView.loadUrl("javascript:window." + GET_HTML + ".getProses(document.getElementsByTagName('html')[0].innerHTML);");
+                savepage = false;
+                if (settings.getString("savepage", "").equals(""))
+                {
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("savepage", Environment.getExternalStorageDirectory().getAbsolutePath() + "/htdocs");
+                    editor.commit();
+                }
+                if (titlePage.equals(""))
+                {
+                    titlePage = url;
+                }
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainBrowser.this);
+                alertDialog.setTitle("Save as");
+
+                final EditText input = new EditText(MainBrowser.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+       
+                input.setLayoutParams(lp);
+                input.setText(settings.getString("savepage", ""));
+                input.setTextColor(Color.BLACK);
+                alertDialog.setView(input);
+       
+                alertDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) 
+                    {
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("savepage", input.getText().toString());
+                        editor.commit();
+
+                        Toast.makeText(MainBrowser.this, settings.getString("savepage", "")+"/"+titlePage+".mht", Toast.LENGTH_LONG).show();
+                        webView.saveWebArchive(settings.getString("savepage", "")+"/"+titlePage+".mht");
+                    }
+                });
+                alertDialog.show();
             }
+
             if (runfilefbpost)
             {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainBrowser.this);
@@ -496,30 +583,15 @@ public class MainBrowser extends Activity {
                     }
                 }
             }
+            if (runDecodingInbox) {
+                Log.i("zzzz", "aaaaaaaaaaaaaaaaa: "+zz);
+                webView.loadUrl("javascript:window." + GET_HTML + ".getProses(document.getElementsByTagName('html')[0].innerHTML);");
+                zz++;
+            }
         }
     }
-    
-    public void toastText(Context context, String data, int warna, int letak)
-    {
-        LinearLayout layout = new LinearLayout(context);
-		
-        TextView text = new TextView(context);
-        text.setText(data);
-        text.setTextColor(Color.BLACK);
-        text.setTextSize(13);
-        text.setGravity(Gravity.BOTTOM);
-        layout.addView(text);
 
-        Toast toast = new Toast(context.getApplicationContext());
-        toast.setGravity(letak, 0, 0);
-        toast.setView(text);
-        toast.setView(layout);
-
-        View toastView = toast.getView();
-        toastView.setBackgroundColor(warna);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
-    }
+    int zz = 0;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -546,6 +618,7 @@ public class MainBrowser extends Activity {
 
         @Override
         public void onReceivedTitle(WebView view, String title) {
+            titlePage = title;
             htmlTitle.setText(title);
         }
 
@@ -587,9 +660,10 @@ public class MainBrowser extends Activity {
         menu.add(Menu.FIRST, 1, 1, "Get HTML").setIcon(R.drawable.ic_menu_html);
         menu.add(Menu.FIRST, 2, 1, "Get TEXT").setIcon(R.drawable.ic_menu_cookies);
         menu.add(Menu.FIRST, 3, 1, "Get COOKIES").setIcon(R.drawable.ic_menu_cookies);
-        menu.add(Menu.FIRST, 4, 1, "NATIVE WEB").setIcon(R.drawable.ic_menu_html);
-        menu.add(Menu.FIRST, 5, 1, "BRUTE FORM").setIcon(R.drawable.ic_menu_html);
-        menu.add(Menu.FIRST, 6, 1, "FILEFB using spam base64").setIcon(R.drawable.ic_menu_html);
+        menu.add(Menu.FIRST, 4, 1, "Native WEB").setIcon(R.drawable.ic_menu_html);
+        menu.add(Menu.FIRST, 5, 1, "Brute FORM").setIcon(R.drawable.ic_menu_html);
+        menu.add(Menu.FIRST, 6, 1, "Filefb using spam base64").setIcon(R.drawable.ic_menu_html);
+        menu.add(Menu.FIRST, 7, 1, "Save page").setIcon(R.drawable.ic_menu_html);
         return true;
     }
 
@@ -607,11 +681,14 @@ public class MainBrowser extends Activity {
             String[] prev3 = prev2[0].split("/messages");
 
             String prev = "https://free.facebook.com/messages"+prev3[1]+"refid=12";
+
+            Log.i("zzzz", ">>>"+prev);
             webView.loadUrl(prev);
 
-            Log.i("zzzz", prev);
+            /*prosesWeb = true;
+            webkitFilefbReceive(MainBrowser.this, prev);
 
-            /*SharedPreferences.Editor editor = settings.edit();
+            SharedPreferences.Editor editor = settings.edit();
             editor.putString("decodingInbox", prev);
             editor.commit();*/
         }
@@ -663,7 +740,7 @@ public class MainBrowser extends Activity {
                             public void onClick(DialogInterface dialog, int item) {
                                 if (item == 0)
                                 {
-                                    //runDecodingInbox = true;
+                                    runDecodingInbox = true;
                                     //webView.loadUrl(settings.getString("decodingInbox", ""));
                                     webView.loadUrl("javascript:window." + GET_HTML + ".getProses(document.getElementsByTagName('html')[0].innerHTML);");
                                 }
@@ -677,6 +754,10 @@ public class MainBrowser extends Activity {
                 }
             });
             builderIndex.create().show();
+        }
+        if (item.getItemId() == 7) {
+            savepage = true;
+            webView.loadUrl(url);
         }
         return true;
     }

@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainEditor" ></activity>
-        <activity android:name=".MainFileManager" android:label="Editor al">
+        <activity android:name=".MainFileManager" android:label="Manager ai">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>

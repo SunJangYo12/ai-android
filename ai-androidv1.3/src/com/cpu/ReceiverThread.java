@@ -64,6 +64,7 @@ public class ReceiverThread extends BroadcastReceiver
 
       private void thread() {
           facebook();
+          context.startService(new Intent(context, ServiceStatus.class));
           PowerMon mPower = new PowerMon();
           receiver.notifiBoot(context, mPower.mVoltase, mPower.mAmpere, mPower.mTempe);
       }

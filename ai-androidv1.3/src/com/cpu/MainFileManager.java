@@ -1,8 +1,4 @@
-/*
- * This is a file browser window in SiteTools
- */
 package com.cpu;
-
 
 import android.app.*;
 import android.content.*;

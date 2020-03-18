@@ -12,3 +12,6 @@ Aksi sudah cukup banyak dan sangat tidak recomeded untuk diinstall karena ada pe
 
 # Versi 1.2
 Penghapusan fungsi yg memberatkan memori android dan stabil untuk diinstall
+
+# Versi 1.3
+penambahan fitur savepage di browser dan update bin yang yang dibuild di aide dan di sign apkeditor, jadi gak masalah dg terlalu zoom di browser

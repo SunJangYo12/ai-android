@@ -147,15 +147,13 @@ public class Pengaturan extends Activity
 					if (settings.getBoolean("text editor color",false)) {
 						editor.putBoolean("text editor color", false);
 						editor.commit();
-						main();
 					}
 					else {
 						editor.putBoolean("text editor color", true);
 						editor.commit();
-						main();
-
 					}
 
+					main();
 					Toast.makeText(getApplicationContext(),"Color : "+settings.getBoolean("text editor color",false),Toast.LENGTH_LONG).show();
 				}
 			});
@@ -169,16 +167,13 @@ public class Pengaturan extends Activity
 					if (settings.getBoolean("touch asisten",false)) {
 						editor.putBoolean("touch asisten", false);
 						editor.commit();
-						main();
-
 					}
 					else {
 						editor.putBoolean("touch asisten", true);
 						editor.commit();
-						main();
-						
 					}
 
+					main();
 					Toast.makeText(getApplicationContext(),"Touch Service : "+settings.getBoolean("touch asisten", false),Toast.LENGTH_LONG).show();
 				}
 			});
@@ -193,17 +188,13 @@ public class Pengaturan extends Activity
 					if (settings.getBoolean("service",false)) {
 						editor.putBoolean("service", false);
 						editor.commit();
-						main();
 					}
 					else {
 						editor.putBoolean("service", true);
 						editor.commit();
-						MainAsisten utils = new MainAsisten();
-						utils.service(getApplicationContext());
-						utils.serviceAlarm(getApplicationContext());
-						main();
 					}
 
+					main();
 					Toast.makeText(getApplicationContext(),"Service : "+settings.getBoolean("service", false),Toast.LENGTH_LONG).show();
 				}
 			});
@@ -218,15 +209,12 @@ public class Pengaturan extends Activity
 					if (settings.getBoolean("notif_catatan",false)) {
 						editor.putBoolean("notif_catatan", false);
 						editor.commit();
-						main();
-
 					}
 					else {
 						editor.putBoolean("notif_catatan", true);
-						editor.commit();
-						main();
-						
+						editor.commit();						
 					}
+					main();
 				}
 			});
 		btnFacebook = (Button)findViewById(R.id.pengaturan_notif_fb);
@@ -239,15 +227,12 @@ public class Pengaturan extends Activity
 					if (settings.getBoolean("alert_fb",false)) {
 						editor.putBoolean("alert_fb", false);
 						editor.commit();
-						main();
-
 					}
 					else {
 						editor.putBoolean("alert_fb", true);
-						editor.commit();
-						main();
-						
+						editor.commit();						
 					}
+					main();
 				}
 			});
 
